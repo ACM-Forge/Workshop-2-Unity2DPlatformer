@@ -12,7 +12,7 @@ This repository will be used to store the files for the ACM CSUF club's second m
 1. Agree to the Personal Edition License as prompted.
 1. When Unity Editor is finished installing, go to the "Projects" tab, then click "Open"
 !<img src="https://user-images.githubusercontent.com/35513545/218860314-f6f18a44-1a9f-404e-80f1-b104248382c5.png" width="500">
-1. In the file explorer dialog, nagivate to the directory that this repository was cloned into. Then, hit "Open" once inside.
-<img src="https://user-images.githubusercontent.com/35513545/218861308-bfdeb27c-5e55-4b6f-a3ca-3dd1f58fb913.png" width="500">
+1. In the file explorer dialog, nagivate to the directory that this repository was cloned into. Then, hit "Open" once inside
+!<img src="https://user-images.githubusercontent.com/35513545/218861308-bfdeb27c-5e55-4b6f-a3ca-3dd1f58fb913.png" width="500">
 1. Unity Editor will now open and begin to download the required packages. This may take a little while.
 1. Once Unity Editor is done initializing the project, it is free to be edited.
