@@ -61,4 +61,9 @@ public class PlayerController : MonoBehaviour
     {
         ResetJump();
     }
+
+    void OnCollisionStay(Collision collisionInfo)
+    {
+        ResetJump();
+    }
 }
