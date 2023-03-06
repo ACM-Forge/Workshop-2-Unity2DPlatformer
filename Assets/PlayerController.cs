@@ -6,7 +6,7 @@ public class PlayerController : MonoBehaviour
 {
     private Rigidbody2D rb;
     private BoxCollider2D box;
-
+    public Vector3 checkPoint;
 
     [Header("Stats")]
     public float Speed = 5.0f;
@@ -29,6 +29,7 @@ public class PlayerController : MonoBehaviour
     {
         Move();
         Jump();
+        ResetPlayer();
     }
 
     void Move() 
@@ -39,12 +40,12 @@ public class PlayerController : MonoBehaviour
             moveForce *= AirControlModifier;
         }
         rb.AddForce(Vector2.right * moveForce);
-        Debug.Log("Moving by " + moveForce);
+        //Debug.Log("Moving by " + moveForce);
     }
 
     void Jump()
     {
-        if (CanJump && Input.GetKeyDown(KeyCode.Space))
+        if (CanJump && Input.GetKey(KeyCode.Space))
         {
             float jumpForce = JumpPower;
             rb.AddForce(Vector2.up * jumpForce,ForceMode2D.Impulse);
@@ -65,5 +66,11 @@ public class PlayerController : MonoBehaviour
     void OnCollisionStay(Collision collisionInfo)
     {
         ResetJump();
+    }
+
+    void ResetPlayer() {
+        if (transform.position.y < -10.0f) {
+            transform.position = checkPoint;
+        }
     }
 }
