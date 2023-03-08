@@ -35,6 +35,7 @@ public class PlayerController : MonoBehaviour
     void Move() 
     {
         float horizontalMovement = Input.GetAxis("Horizontal");
+        flipSprite(horizontalMovement);
         float moveForce = horizontalMovement * Speed * Time.deltaTime;
         if(!CanJump) {
             moveForce *= AirControlModifier;
@@ -68,9 +69,22 @@ public class PlayerController : MonoBehaviour
         ResetJump();
     }
 
-    void ResetPlayer() {
+    void ResetPlayer() 
+    {
         if (transform.position.y < -10.0f) {
             transform.position = checkPoint;
+        }
+    }
+
+    void flipSprite(float input)
+    {
+        if(input > 0)  // Moving Right
+        {
+            transform.localRotation = Quaternion.Euler(0, 0, 0); // Face sprite right
+        }
+        else if (input < 0)
+        {
+           transform.localRotation = Quaternion.Euler(0, 180, 0); // Face sprite right
         }
     }
 }
