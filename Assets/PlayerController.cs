@@ -34,57 +34,66 @@ public class PlayerController : MonoBehaviour
 
     void Move() 
     {
-        float horizontalMovement = Input.GetAxis("Horizontal");
-        flipSprite(horizontalMovement);
-        float moveForce = horizontalMovement * Speed * Time.deltaTime;
+        // Get the horizontal input from the player (A/D, <-,->)
+        float horizontalMovement = Input.GetAxis("Horizontal"); 
+        
+        // Sync the movement speed with the framerate
+        float moveForce = horizontalMovement * Speed * Time.deltaTime; 
+
+         // If the player cannot jump -> the player is in the air
         if(!CanJump) {
             moveForce *= AirControlModifier;
         }
         rb.AddForce(Vector2.right * moveForce);
-        //Debug.Log("Moving by " + moveForce);
+
+        // Flip sprite to face the correct direction based on the player input
+        flipSprite(horizontalMovement); 
     }
 
     void Jump()
     {
-        if (CanJump && Input.GetKey(KeyCode.Space))
+        // If we are touching something and pressing space
+        if (CanJump && Input.GetKey(KeyCode.Space)) 
         {
-            float jumpForce = JumpPower;
-            rb.AddForce(Vector2.up * jumpForce,ForceMode2D.Impulse);
+            rb.AddForce(Vector2.up * JumpPower,ForceMode2D.Impulse);
             CanJump = false;
         }
     }
 
-    void ResetJump() 
+    void OnCollisionEnter2D(Collision2D col) 
     {
         CanJump = true;
     }
 
-    void OnCollisionEnter2D(Collision2D col) 
-    {
-        ResetJump();
-    }
-
     void OnCollisionStay(Collision collisionInfo)
     {
-        ResetJump();
+        CanJump = true;
     }
 
     void ResetPlayer() 
     {
-        if (transform.position.y < -10.0f) {
-            transform.position = checkPoint;
+        // If we fall further than 10 units off the map
+        if (transform.position.y < -10.0f) { 
+            // Reset to checkpoint
+            transform.position = checkPoint; 
         }
     }
 
     void flipSprite(float input)
     {
-        if(input > 0)  // Moving Right
+        // Moving Right
+        if(input > 0)  
         {
-            transform.localRotation = Quaternion.Euler(0, 0, 0); // Face sprite right
+            // Face sprite right
+            float degrees = 0;
+            transform.localRotation = Quaternion.Euler(0, degrees, 0); 
         }
+        // Moving Left
         else if (input < 0)
         {
-           transform.localRotation = Quaternion.Euler(0, 180, 0); // Face sprite right
+            // Face sprite left
+            float degrees = 180;
+            transform.localRotation = Quaternion.Euler(0, degrees, 0); 
         }
     }
 }

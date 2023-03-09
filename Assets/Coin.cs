@@ -13,24 +13,13 @@ public class Coin : MonoBehaviour
         Destroy(gameObject);
     }
 
-    // void Update() 
-    // {
-    //     float distance = Vector2.Distance(PlayerBody.transform.position, transform.position);
-    //     Debug.Log("Distance: " + distance);
-    //     if (distance < 1.0f)
-    //     {
-    //         OnTouch();
-    //     }
-    // }
-
-    void OnCollisionEnter2D(Collision2D col) 
+    private void OnTriggerEnter2D(Collider2D col)
     {
         GameObject touched = col.gameObject;
+        // If 
         if (touched == PlayerBody) 
         {
             OnTouch();
         }
     }
-
-    
 }
