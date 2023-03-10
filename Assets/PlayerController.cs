@@ -5,23 +5,24 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     private Rigidbody2D rb;
-    private BoxCollider2D box;
+	private Animator animator;
+	private SpriteRenderer spriteRenderer;
     public Vector3 checkPoint;
 
     [Header("Stats")]
-    public float Speed = 5.0f;
-    public float AirControlModifier = 0.5f;
-    public float JumpPower = 10.0f;
+    public float speed = 200.0f;
+    public float airControlModifier = 0.5f;
+    public float jumpPower = 100.0f;
 
     [Header("States")]
-    public bool Walking = false;
-    public bool CanJump = false;
+    public bool isGrounded = false;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        box = GetComponent<BoxCollider2D>();
+		animator = GetComponent<Animator>();
+		spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -30,7 +31,13 @@ public class PlayerController : MonoBehaviour
         Move();
         Jump();
         ResetPlayer();
+		CheckIfFalling();
     }
+
+	void CheckIfFalling(){
+		bool isFalling = !isGrounded && (rb.velocity.y < 0);
+		animator.SetBool("Falling", isFalling);
+	}
 
     void Move() 
     {
@@ -38,36 +45,43 @@ public class PlayerController : MonoBehaviour
         float horizontalMovement = Input.GetAxis("Horizontal"); 
         
         // Sync the movement speed with the framerate
-        float moveForce = horizontalMovement * Speed * Time.deltaTime; 
+        float moveForce = horizontalMovement * speed * Time.deltaTime; 
 
          // If the player cannot jump -> the player is in the air
-        if(!CanJump) {
-            moveForce *= AirControlModifier;
+        if(!isGrounded) {
+            moveForce *= airControlModifier;
         }
-        rb.AddForce(Vector2.right * moveForce);
+        rb.AddForce(Vector2.right * moveForce, ForceMode2D.Impulse);
 
         // Flip sprite to face the correct direction based on the player input
-        flipSprite(horizontalMovement); 
+        spriteRenderer.flipX = horizontalMovement < 0;
+
+		// Animation
+		animator.SetBool("Run", horizontalMovement != 0);
     }
 
     void Jump()
     {
         // If we are touching something and pressing space
-        if (CanJump && Input.GetKey(KeyCode.Space)) 
+        if (isGrounded && Input.GetKeyDown(KeyCode.Space)) 
         {
-            rb.AddForce(Vector2.up * JumpPower,ForceMode2D.Impulse);
-            CanJump = false;
+            rb.AddForce(Vector2.up * jumpPower,ForceMode2D.Impulse);
+			animator.SetTrigger("Jump");
+            isGrounded = false;
+			animator.SetBool("Grounded", false);
         }
     }
 
     void OnCollisionEnter2D(Collision2D col) 
     {
-        CanJump = true;
+        isGrounded = true;
+		animator.SetBool("Grounded", true);
     }
 
-    void OnCollisionStay(Collision collisionInfo)
+	void OnCollisionExit2D(Collision2D col) 
     {
-        CanJump = true;
+		isGrounded = false;
+        animator.SetBool("Grounded", false);
     }
 
     void ResetPlayer() 
@@ -79,21 +93,4 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void flipSprite(float input)
-    {
-        // Moving Right
-        if(input > 0)  
-        {
-            // Face sprite right
-            float degrees = 0;
-            transform.localRotation = Quaternion.Euler(0, degrees, 0); 
-        }
-        // Moving Left
-        else if (input < 0)
-        {
-            // Face sprite left
-            float degrees = 180;
-            transform.localRotation = Quaternion.Euler(0, degrees, 0); 
-        }
-    }
 }
