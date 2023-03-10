@@ -31,13 +31,8 @@ public class PlayerController : MonoBehaviour
         Move();
         Jump();
         ResetPlayer();
-		CheckIfFalling();
+        SetAnimation();
     }
-
-	void CheckIfFalling(){
-		bool isFalling = !isGrounded && (rb.velocity.y < 0);
-		animator.SetBool("Falling", isFalling);
-	}
 
     void Move() 
     {
@@ -55,9 +50,6 @@ public class PlayerController : MonoBehaviour
 
         // Flip sprite to face the correct direction based on the player input
         spriteRenderer.flipX = horizontalMovement < 0;
-
-		// Animation
-		animator.SetBool("Run", horizontalMovement != 0);
     }
 
     void Jump()
@@ -68,20 +60,12 @@ public class PlayerController : MonoBehaviour
             rb.AddForce(Vector2.up * jumpPower,ForceMode2D.Impulse);
 			animator.SetTrigger("Jump");
             isGrounded = false;
-			animator.SetBool("Grounded", false);
         }
     }
 
     void OnCollisionEnter2D(Collision2D col) 
     {
         isGrounded = true;
-		animator.SetBool("Grounded", true);
-    }
-
-	void OnCollisionExit2D(Collision2D col) 
-    {
-		isGrounded = false;
-        animator.SetBool("Grounded", false);
     }
 
     void ResetPlayer() 
@@ -90,6 +74,27 @@ public class PlayerController : MonoBehaviour
         if (transform.position.y < -10.0f) { 
             // Reset to checkpoint
             transform.position = checkPoint; 
+        }
+    }
+
+    void SetAnimation() {
+        if (isGrounded) // We are on the ground
+        {
+            animator.SetBool("Grounded", true);
+            if (rb.velocity.x > 1 || rb.velocity.x < -1) // We are moving on the ground
+            {
+                animator.SetBool("Run", true);
+            }
+            else { // We are not moving on the ground
+                animator.SetBool("Run", false);
+            }
+            
+        }
+        else // We are not on the ground
+        {
+            animator.SetBool("Grounded", false);
+            animator.SetBool("Falling", rb.velocity.y < 0);  //... and falling
+            
         }
     }
 
